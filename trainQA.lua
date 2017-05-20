@@ -1,6 +1,6 @@
 --[[
   Training script for semantic relatedness prediction on the Twitter dataset.
-  We Thank Kai Sheng Tai for providing the preprocessing/basis codes. 
+  We Thank Kai Sheng Tai for providing the preprocessing/basis codes.
 --]]
 
 require('torch')
@@ -41,7 +41,7 @@ opt = cmd:parse(arg)
 
 --read default arguments
 local args = {
-  model = 'conv', --convolutional neural network 
+  model = 'conv', --convolutional neural network
   layers = 1, -- number of hidden layers in the fully-connected layer
   dim = 150, -- number of neurons in the hidden layer.
 }
@@ -55,7 +55,7 @@ model_structure = model_name
 torch.manualSeed(-3.0753778015266e+18)
 print('<torch> using the automatic seed: ' .. torch.initialSeed())
 
-if opt.dataset ~= 'TrecQA' and opt.dataset ~= 'WikiQA' then
+if opt.dataset ~= 'TrecQA' and opt.dataset ~= 'WikiQA' and opt.dataset ~= 'kaggle' then
   print('Error dataset!')
   os.exit()
 end
@@ -101,6 +101,10 @@ elseif opt.dataset == 'WikiQA' then
   train_dir = data_dir .. 'train/'
   dev_dir = data_dir .. 'dev/'
   test_dir = data_dir .. 'test/'
+elseif opt.dataset == 'kaggle' then
+  train_dir = data_dir .. 'sample-train/'
+  dev_dir = data_dir .. 'sample-train/'
+  test_dir = data_dir .. 'sample-train/'
 end
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD)
@@ -150,7 +154,7 @@ for i = 1, num_epochs do
   print('--------------- EPOCH ' .. i .. '--- -------------')
   model:trainCombineOnly(train_dataset)
   print('Finished epoch in ' .. ( sys.clock() - start) )
-  
+
   local dev_predictions = model:predict_dataset(dev_dataset)
   local dev_map_score = map(dev_predictions, dev_dataset.labels, dev_dataset.boundary, dev_dataset.numrels)
  local dev_mrr_score = mrr(dev_predictions, dev_dataset.labels, dev_dataset.boundary, dev_dataset.numrels)

@@ -44,7 +44,7 @@ function similarityMeasure.read_relatedness_dataset(dir, vocab, task)
   if task == 'twitter' then
 	file1 = 'tokenize_query2.txt'
 	file2 = 'tokenize_doc2.txt'
-  else 
+  else
 	file1 = 'a.toks'
 	file2 = 'b.toks'
   end
@@ -55,28 +55,6 @@ function similarityMeasure.read_relatedness_dataset(dir, vocab, task)
   local sim_file = torch.DiskFile(dir .. 'sim.txt')
   dataset.ids = {}
   dataset.labels = torch.Tensor(dataset.size)
-  if task == 'twitter' or task == 'qa' then  
-    local boundary_file, _ = io.open(dir .. 'boundary.txt')
-    local numrels_file = torch.DiskFile(dir .. 'numrels.txt')
-    local boundary, counter = {}, 0
-    while true do
-      line = boundary_file:read()
-      if line == nil then break end
-      counter = counter + 1
-      boundary[counter] = tonumber(line)
-    end
-    boundary_file:close()  
-    dataset.boundary = torch.IntTensor(#boundary)
-    for counter, bound in pairs(boundary) do
-      dataset.boundary[counter] = bound
-    end  
-    -- read numrels data
-    dataset.numrels = torch.IntTensor(#boundary-1)
-    for i = 1, #boundary-1 do
-      dataset.numrels[i] = numrels_file:readInt()
-    end
-    numrels_file:close()
-  end
 
   for i = 1, dataset.size do
     dataset.ids[i] = id_file:read()
