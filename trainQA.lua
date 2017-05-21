@@ -164,7 +164,12 @@ for i = 1, num_epochs do
   printf('-- dev log loss: %.5f, accuracy: %.5f\n', dev_log_loss, dev_accuracy)
 
   -- keep track of least log loss and best dev model??
+  -- save the model at each epoch
+  local model_save_path = string.format(
+	        similarityMeasure.models_dir .. '/results-%s.%dl.%dd.epoch-%d.%.5f.%d.pred', args.model, args.layers, args.dim, i, dev_log_loss, id)
+  torch.save(model_save_path, model)
 
+--[=====[
  -- evaluate test set and save predictions
     local test_predictions = model:predict_dataset(test_dataset)
     local predictions_save_path = string.format(
@@ -175,5 +180,6 @@ for i = 1, num_epochs do
       predictions_file:writeFloat(test_predictions[i])
     end
     predictions_file:close()
+--]=====]
 end
 print('finished training in ' .. (sys.clock() - train_start))
