@@ -108,7 +108,7 @@ elseif opt.dataset == 'kaggle' then
 end
 
 -- adding unknown token to vocab
-vocab:add_unk_token()
+-- vocab:add_unk_token()
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD)
 local dev_dataset = similarityMeasure.read_relatedness_dataset(dev_dir, vocab, taskD)
@@ -162,6 +162,8 @@ for i = 1, num_epochs do
   local dev_log_loss = log_loss(dev_predictions, dev_dataset.labels)
   local dev_accuracy = accuracy(dev_predictions, dev_dataset.labels)
   printf('-- dev log loss: %.5f, accuracy: %.5f\n', dev_log_loss, dev_accuracy)
+
+  -- keep track of least log loss and best dev model??
 
  -- evaluate test set and save predictions
     local test_predictions = model:predict_dataset(test_dataset)
