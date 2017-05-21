@@ -89,6 +89,8 @@ for i = 1, vocab.size do
   end
 end
 print('unk count = ' .. num_unk)
+print('vecs:size() - ')
+print(vecs:size())
 emb_vocab = nil
 emb_vecs = nil
 collectgarbage()
