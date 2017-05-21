@@ -1,4 +1,5 @@
-ining script for semantic relatedness prediction on the Twitter dataset.
+--[[
+  Training script for semantic relatedness prediction on the Twitter dataset.
   We Thank Kai Sheng Tai for providing the preprocessing/basis codes.
 --]]
 
