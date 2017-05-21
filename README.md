@@ -49,6 +49,9 @@ You can also change the -neg_mode and -num_pairs to select different sampling st
 ``3.`` To run the base convolutional neural network model in [2], please follow the same parameter setting:
 ```
 $ th trainQA.lua -dataset TrecQA -version raw
+
+$ export OMP_NUM_THREADS=10
+$ th trainQA.lua -dataset kaggle > out.train.log 2>&1 &
 ```
 
 Results
