@@ -51,7 +51,7 @@ You can also change the -neg_mode and -num_pairs to select different sampling st
 $ th trainQA.lua -dataset TrecQA -version raw
 
 $ export OMP_NUM_THREADS=10
-$ th trainQA.lua -dataset TrecQA kaggle > out.train.log 2>&1 &
+$ th trainQA.lua -dataset kaggle > out.train.log 2>&1 &
 ```
 
 Results
