@@ -108,11 +108,11 @@ elseif opt.dataset == 'kaggle' then
 end
 
 -- adding unknown token to vocab
--- vocab:add_unk_token()
+vocab:add_unk_token()
 
-local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD)
-local dev_dataset = similarityMeasure.read_relatedness_dataset(dev_dir, vocab, taskD)
-local test_dataset = similarityMeasure.read_relatedness_dataset(test_dir, vocab, taskD)
+local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD, true)
+local dev_dataset = similarityMeasure.read_relatedness_dataset(dev_dir, vocab, taskD, true)
+local test_dataset = similarityMeasure.read_relatedness_dataset(test_dir, vocab, taskD, false)
 printf('train_dir: %s, num train = %d\n', train_dir, train_dataset.size)
 printf('dev_dir: %s, num dev   = %d\n', dev_dir, dev_dataset.size)
 printf('test_dir: %s, num test  = %d\n', test_dir, test_dataset.size)

@@ -38,7 +38,7 @@ function similarityMeasure.read_sentences(path, vocab)
   return sentences
 end
 
-function similarityMeasure.read_relatedness_dataset(dir, vocab, task)
+function similarityMeasure.read_relatedness_dataset(dir, vocab, task, simExists)
   local dataset = {}
   dataset.vocab = vocab
   if task == 'twitter' then
@@ -52,22 +52,26 @@ function similarityMeasure.read_relatedness_dataset(dir, vocab, task)
   dataset.rsents = similarityMeasure.read_sentences(dir .. file2, vocab)
   dataset.size = #dataset.lsents
   local id_file = io.open(dir .. 'id.txt', 'r')
-  local sim_file = torch.DiskFile(dir .. 'sim.txt')
-  dataset.ids = {}
-  dataset.labels = torch.Tensor(dataset.size)
 
-  for i = 1, dataset.size do
-    dataset.ids[i] = id_file:read()
-    if task == 'sic' then
-    	dataset.labels[i] = 0.25 * (sim_file:readDouble() - 1) -- sic data
-    elseif task == 'vid' then
-	dataset.labels[i] = 0.2 * (sim_file:readDouble()) -- vid data
-    else
-    	dataset.labels[i] = (sim_file:readDouble()) -- twi and msp
+  -- there is sim.txt for test set in kaggle
+  if simExists then
+    local sim_file = torch.DiskFile(dir .. 'sim.txt')
+    dataset.ids = {}
+    dataset.labels = torch.Tensor(dataset.size)
+    for i = 1, dataset.size do
+        dataset.ids[i] = id_file:read()
+        if task == 'sic' then
+        	dataset.labels[i] = 0.25 * (sim_file:readDouble() - 1) -- sic data
+        elseif task == 'vid' then
+	    dataset.labels[i] = 0.2 * (sim_file:readDouble()) -- vid data
+        else
+    	    dataset.labels[i] = (sim_file:readDouble()) -- twi and msp
+        end
     end
+    id_file:close()
+    sim_file:close()
   end
-  id_file:close()
-  sim_file:close()
+
   return dataset
 end
 
