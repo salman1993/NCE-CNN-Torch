@@ -1,5 +1,19 @@
 require('torch')
 
+function log_loss(scores, labels)
+	N = labels:size()[1]
+	loss = torch.sum( torch.cmul(labels, torch.log(scores)) + torch.cmul((1-labels), torch.log((1-scores))) ) / (-N)
+	return loss
+end
+
+function accuracy(scores, labels)
+    N = labels:size()[1]
+    pred = torch.round(scores)
+    correct = torch.sum( torch.eq(pred, labels) )
+    accuracy = correct / N
+    return accuracy
+end
+
 function pearson(x, y)
   x = x - x:mean()
   y = y - y:mean()
@@ -11,15 +25,15 @@ function match(x, y)
   return match / x:size(1)
 end
 
-function mrr(score, qrels, boundary, num_rels) 
+function mrr(score, qrels, boundary, num_rels)
   local mrr_score = 0
   for qid = 1, boundary:size(1)-1 do
     local num_pairs = boundary[qid+1]-boundary[qid] --number of query-doc pairs
     local slice_score = torch.Tensor(num_pairs):copy(score[{{boundary[qid]+1, boundary[qid+1]}}])
-    local sort_score, sort_index = torch.sort(slice_score, true) -- sort score from high to low    
+    local sort_score, sort_index = torch.sort(slice_score, true) -- sort score from high to low
     local new_qrels = torch.Tensor(num_pairs)
     local tp, ap = 0, 0
-    --printf("qid:%d, size:%d\n", qid, -boundary[qid]+boundary[qid+1])  
+    --printf("qid:%d, size:%d\n", qid, -boundary[qid]+boundary[qid+1])
     for i = 1, num_pairs do
       new_qrels[i] = qrels[boundary[qid]+sort_index[i]]
       if new_qrels[i] >= 1 then
@@ -36,10 +50,10 @@ function map(score, qrels, boundary, num_rels)
   for qid = 1, boundary:size(1)-1 do -- per query
     local num_pairs = boundary[qid+1]-boundary[qid] --number of query-doc pairs
     local slice_score = torch.Tensor(num_pairs):copy(score[{{boundary[qid]+1, boundary[qid+1]}}])
-    local sort_score, sort_index = torch.sort(slice_score, true) -- sort score from high to low    
+    local sort_score, sort_index = torch.sort(slice_score, true) -- sort score from high to low
     local new_qrels = torch.Tensor(num_pairs)
     local tp, ap = 0, 0
-    --printf("qid:%d, size:%d\n", qid, -boundary[qid]+boundary[qid+1])	
+    --printf("qid:%d, size:%d\n", qid, -boundary[qid]+boundary[qid+1])
     for i = 1, num_pairs do
       new_qrels[i] = qrels[boundary[qid]+sort_index[i]]
       if new_qrels[i] >= 1 then

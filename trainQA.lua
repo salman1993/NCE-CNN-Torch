@@ -156,10 +156,11 @@ for i = 1, num_epochs do
   print('Finished epoch in ' .. ( sys.clock() - start) )
 
   local dev_predictions = model:predict_dataset(dev_dataset)
-  local dev_map_score = map(dev_predictions, dev_dataset.labels, dev_dataset.boundary, dev_dataset.numrels)
- local dev_mrr_score = mrr(dev_predictions, dev_dataset.labels, dev_dataset.boundary, dev_dataset.numrels)
-  printf('-- dev map score: %.5f, mrr score: %.5f\n', dev_map_score, dev_mrr_score)
+  local dev_log_loss = log_loss(dev_predictions, dev_dataset.labels)
+  local dev_accuracy = accuracy(dev_predictions, dev_dataset.labels)
+  printf('-- dev log loss: %.5f, accuracy: %.5f\n', dev_log_loss, dev_accuracy)
 
+--[=====[
  -- if dev_map_score >= best_dev_score then
     best_dev_score = dev_map_score
     local test_predictions = model:predict_dataset(test_dataset)
@@ -176,5 +177,6 @@ for i = 1, num_epochs do
     end
     predictions_file:close()
  -- end
+--]=====]
 end
 print('finished training in ' .. (sys.clock() - train_start))
