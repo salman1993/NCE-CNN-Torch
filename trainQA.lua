@@ -102,9 +102,9 @@ elseif opt.dataset == 'WikiQA' then
   dev_dir = data_dir .. 'dev/'
   test_dir = data_dir .. 'test/'
 elseif opt.dataset == 'kaggle' then
-  train_dir = data_dir .. 'sample-train/'
-  dev_dir = data_dir .. 'sample-train/'
-  test_dir = data_dir .. 'sample-train/'
+  train_dir = data_dir .. 'train/'
+  dev_dir = data_dir .. 'dev/'
+  test_dir = data_dir .. 'test/'
 end
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD)
