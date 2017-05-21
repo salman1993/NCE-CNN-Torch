@@ -92,7 +92,7 @@ emb_vecs = nil
 collectgarbage()
 local taskD = 'qa'
 -- load datasets
-print('loading datasets' .. opt.dataset)
+print('loading dataset: ' .. opt.dataset)
 if opt.dataset == 'TrecQA' then
   train_dir = data_dir .. 'train-all/'
   dev_dir = data_dir .. opt.version .. '-dev/'
@@ -106,6 +106,9 @@ elseif opt.dataset == 'kaggle' then
   dev_dir = data_dir .. 'dev/'
   test_dir = data_dir .. 'test/'
 end
+
+-- adding unknown token to vocab
+vocab:add_unk_token()
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD)
 local dev_dataset = similarityMeasure.read_relatedness_dataset(dev_dir, vocab, taskD)
