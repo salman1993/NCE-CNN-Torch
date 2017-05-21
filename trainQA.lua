@@ -73,7 +73,6 @@ print('loading word embeddings')
 local emb_dir = 'data/glove/'
 local emb_prefix = emb_dir .. 'glove.840B'
 local emb_vocab, emb_vecs = similarityMeasure.read_embedding(emb_prefix .. '.vocab', emb_prefix .. '.300d.th')
-
 local emb_dim = emb_vecs:size(2)
 
 -- use only vectors in vocabulary (not necessary, but gives faster training)
@@ -138,6 +137,10 @@ model:print_config()
 
 if lfs.attributes(similarityMeasure.predictions_dir) == nil then
   lfs.mkdir(similarityMeasure.predictions_dir)
+end
+
+if lfs.attributes(similarityMeasure.models_dir) == nil then
+  lfs.mkdir(similarityMeasure.models_dir)
 end
 
 -- train
