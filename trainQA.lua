@@ -104,7 +104,7 @@ elseif opt.dataset == 'WikiQA' then
 elseif opt.dataset == 'kaggle' then
   train_dir = data_dir .. 'train/'
   dev_dir = data_dir .. 'dev/'
-  test_dir = data_dir .. 'test/'
+  test_dir = data_dir .. 'dev/'
 end
 
 -- adding unknown token to vocab

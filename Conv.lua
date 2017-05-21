@@ -9,7 +9,7 @@ function Conv:__init(config)
   self.structure     = config.structure     or 'lstm' -- {lstm, bilstm}
   self.sim_nhidden   = config.sim_nhidden   or 150
   self.task          = config.task          or 'twitter' --'twitter'  -- or 'vid'
-	
+
   -- word embedding
   self.emb_vecs = config.emb_vecs
   self.emb_dim = config.emb_vecs:size(2)
@@ -20,7 +20,7 @@ function Conv:__init(config)
   else
     error("not possible task!")
   end
-	
+
   -- optimizer configuration
   self.optim_state = { learningRate = self.learning_rate }
 
@@ -28,23 +28,23 @@ function Conv:__init(config)
   --self.criterion = nn.DistKLDivCriterion()--nn.ClassNLLCriterion();
   self.criterion = nn.ClassNLLCriterion();
   --print('set KL Divergence criterion\n')
-  print('set Negative Log Likelihood criterion\n')  
+  print('set Negative Log Likelihood criterion\n')
   ----------------------------------------Combination of ConvNets.
   dofile 'models.lua'
   print('<model> creating a fresh model')
-  
+
   -- Type of model; Size of vocabulary; Number of output classes
   local modelName = 'deepQueryRankingNgramSimilarityOnevsGroupMaxMinMeanLinearExDGpPoinPercpt'
   print(modelName)
   self.ngram = 3
   self.length = self.emb_dim
-  self.convModel = createModel(modelName, 10000, self.length, self.num_classes, self.ngram)  
+  self.convModel = createModel(modelName, 10000, self.length, self.num_classes, self.ngram)
   self.softMaxC = self:ClassifierOOne()
 
   ----------------------------------------
   local modules = nn.Parallel()
-    :add(self.convModel) 
-    :add(self.softMaxC) 
+    :add(self.convModel)
+    :add(self.softMaxC)
   self.params, self.grad_params = modules:getParameters()
   --print(self.params:norm())
   --print(self.convModel:parameters()[1][1]:norm())
@@ -54,17 +54,17 @@ end
 function Conv:ClassifierOOne()
   local maxMinMean = 3
   local separator = (maxMinMean+1)*self.mem_dim
-  local modelQ1 = nn.Sequential()	
+  local modelQ1 = nn.Sequential()
   local ngram = self.ngram
-  local items = (ngram+1)*3  		
+  local items = (ngram+1)*3
   --local items = (ngram+1) -- no Min and Mean
   local NumFilter = self.length --300
-  local conceptFNum = 20	
+  local conceptFNum = 20
   inputNum = 2*items*items/3+NumFilter*items*items/3+6*NumFilter+(2+NumFilter)*2*ngram*conceptFNum--+6*NumFilter --PoinPercpt model!
   modelQ1:add(nn.Linear(inputNum, self.sim_nhidden))
-  modelQ1:add(nn.Tanh())	
+  modelQ1:add(nn.Tanh())
   modelQ1:add(nn.Linear(self.sim_nhidden, self.num_classes))
-  modelQ1:add(nn.LogSoftMax())	
+  modelQ1:add(nn.LogSoftMax())
   return modelQ1
 end
 
@@ -73,7 +73,7 @@ function Conv:trainCombineOnly(dataset)
   --local confusion = optim.ConfusionMatrix(classes)
   --confusion:zero()
   train_looss = 0.0
-   
+
   local indices = torch.randperm(dataset.size)
   local zeros = torch.zeros(self.mem_dim)
   for i = 1, dataset.size, self.batch_size do
@@ -89,7 +89,8 @@ function Conv:trainCombineOnly(dataset)
       if self.task == 'sic' or self.task == 'vid' then
         sim = dataset.labels[indices[i + j - 1]] * (self.num_classes - 1) + 1
       elseif self.task == 'twitter' or self.task == 'ttg' or self.task == 'qa' then
-        sim = dataset.labels[indices[i + j - 1]] + 1 
+        print('trying to index: ' .. indices[i + j - 1])
+        sim = dataset.labels[indices[i + j - 1]] + 1
       else
 	error("not possible!")
       end
@@ -101,7 +102,7 @@ function Conv:trainCombineOnly(dataset)
         targets[{j, ceil}] = sim - floor
       end--]]
     end
-    
+
     local feval = function(x)
       self.grad_params:zero()
       local loss = 0
