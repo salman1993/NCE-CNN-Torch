@@ -1,16 +1,16 @@
 require('torch')
 
 function log_loss(scores, labels)
-	N = labels:size()[1]
-	loss = torch.sum( torch.cmul(labels, torch.log(scores)) + torch.cmul((1-labels), torch.log((1-scores))) ) / (-N)
+	local N = labels:size()[1]
+	local loss = torch.sum( torch.cmul(labels, torch.log(scores)) + torch.cmul((1-labels), torch.log((1-scores))) ) / (-N)
 	return loss
 end
 
 function accuracy(scores, labels)
-    N = labels:size()[1]
-    pred = torch.round(scores)
-    correct = torch.sum( torch.eq(pred, labels) )
-    accuracy = correct / N
+    local N = labels:size()[1]
+    local pred = torch.round(scores)
+    local correct = torch.sum( torch.eq(pred, labels) )
+    local accuracy = correct / N
     return accuracy
 end
 
