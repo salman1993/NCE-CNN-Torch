@@ -1,5 +1,4 @@
---[[
-  Training script for semantic relatedness prediction on the Twitter dataset.
+ining script for semantic relatedness prediction on the Twitter dataset.
   We Thank Kai Sheng Tai for providing the preprocessing/basis codes.
 --]]
 
@@ -64,6 +63,8 @@ local data_dir = 'data/' .. opt.dataset .. '/'
 
 -- load vocab
 local vocab = similarityMeasure.Vocab(data_dir .. 'vocab.txt')
+-- adding unknown token to vocab
+vocab:add_unk_token()
 
 -- load embeddings
 print('loading word embeddings')
@@ -106,9 +107,6 @@ elseif opt.dataset == 'kaggle' then
   dev_dir = data_dir .. 'dev/'
   test_dir = data_dir .. 'dev/'
 end
-
--- adding unknown token to vocab
-vocab:add_unk_token()
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD, true)
 local dev_dataset = similarityMeasure.read_relatedness_dataset(dev_dir, vocab, taskD, true)
@@ -166,14 +164,14 @@ for i = 1, num_epochs do
   -- keep track of least log loss and best dev model??
   -- save the model at each epoch
   local model_save_path = string.format(
-	        similarityMeasure.models_dir .. '/results-%s.%dl.%dd.epoch-%d.%.5f.%d.pred', args.model, args.layers, args.dim, i, dev_log_loss, id)
+            similarityMeasure.models_dir .. '/results-%s.%dl.%dd.epoch-%d.%.5f.%d.pred', args.model, args.layers, args.dim, i, dev_log_loss, id)
   torch.save(model_save_path, model)
 
 --[=====[
  -- evaluate test set and save predictions
     local test_predictions = model:predict_dataset(test_dataset)
     local predictions_save_path = string.format(
-	        similarityMeasure.predictions_dir .. '/results-%s.%dl.%dd.epoch-%d.%.5f.%d.pred', args.model, args.layers, args.dim, i, dev_log_loss, id)
+            similarityMeasure.predictions_dir .. '/results-%s.%dl.%dd.epoch-%d.%.5f.%d.pred', args.model, args.layers, args.dim, i, dev_log_loss, id)
     local predictions_file = torch.DiskFile(predictions_save_path, 'w')
     print('writing predictions to ' .. predictions_save_path)
     for i = 1, test_predictions:size(1) do

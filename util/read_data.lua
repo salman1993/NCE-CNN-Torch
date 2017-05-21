@@ -27,7 +27,8 @@ function similarityMeasure.read_sentences(path, vocab)
     end
     if len < 3 then
       for i = len+1, 3 do
-	sent[i] = vocab:index('unk') -- sent[len]
+	    --sent[i] = vocab:index('unk') -- sent[len]
+        sent[i] = vocab:index('<unk>')
       end
     end
     if sent == nil then print('line: '..line) end
