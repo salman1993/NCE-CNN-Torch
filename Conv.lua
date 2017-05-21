@@ -89,7 +89,7 @@ function Conv:trainCombineOnly(dataset)
       if self.task == 'sic' or self.task == 'vid' then
         sim = dataset.labels[indices[i + j - 1]] * (self.num_classes - 1) + 1
       elseif self.task == 'twitter' or self.task == 'ttg' or self.task == 'qa' then
-        print('trying to index: ' .. indices[i + j - 1])
+        -- print('trying to index: ' .. indices[i + j - 1])
         sim = dataset.labels[indices[i + j - 1]] + 1
       else
 	error("not possible!")
