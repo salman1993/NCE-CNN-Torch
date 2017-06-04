@@ -107,7 +107,7 @@ elseif opt.dataset == 'WikiQA' then
 elseif opt.dataset == 'kaggle' then
   train_dir = data_dir .. 'train/'
   dev_dir = data_dir .. 'dev/'
-  test_dir = data_dir .. 'test/'
+  test_dir = data_dir .. 'train/'
 end
 
 local train_dataset = similarityMeasure.read_relatedness_dataset(train_dir, vocab, taskD, true)
@@ -134,6 +134,7 @@ local model = model_class{
 
 print("loading model from path: " .. model_path)
 model = torch.load(model_path)
+model.emb_vecs = vecs
 
 -- print information
 header('model configuration')
@@ -148,7 +149,7 @@ local id = 2011
 print("Id: " .. id)
  -- evaluate test set and save predictions
 local test_predictions = model:predict_dataset(test_dataset)
-local predictions_save_path = string.format(similarityMeasure.predictions_dir .. '/results.%d.pred', id)
+local predictions_save_path = string.format(similarityMeasure.predictions_dir .. '/results.train.%d.pred', id)
 local predictions_file = torch.DiskFile(predictions_save_path, 'w')
 print('writing predictions to ' .. predictions_save_path)
 for i = 1, test_predictions:size(1) do

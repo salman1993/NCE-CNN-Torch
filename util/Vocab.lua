@@ -97,7 +97,8 @@ end
 
 function Vocab:add_unk_token()
   if self.unk_token ~= nil then return end
-  self.unk_index = self:add('<unk>')
+  self.unk_token = '<unk>'
+  self.unk_index = self:add(self.unk_token)
 end
 
 function Vocab:add_start_token()
